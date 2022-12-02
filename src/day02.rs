@@ -1,12 +1,7 @@
 pub fn part1(input: String) {
-	let lines: Vec<String> = input
-		.lines()
-		.map(|line| line.parse::<String>().unwrap())
-		.collect();
-
 	let mut score: usize = 0;
 
-	for line in lines.iter() {
+	for line in input.lines() {
 		let s: &str = &*line;
 
 		match s {

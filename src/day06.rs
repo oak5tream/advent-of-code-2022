@@ -4,18 +4,15 @@ use std::iter::FromIterator;
 fn get_start_index(input: &str, num_chars: usize) -> usize {
 	let buffer: Vec<char> = input.chars().collect();
 
-	let mut index: usize = num_chars;
-
-	for window in buffer.windows(num_chars) {
+	for (index, window) in buffer.windows(num_chars).enumerate() {
 		let hash: HashSet<char> = HashSet::from_iter(window.iter().cloned());
+
 		if hash.len() == num_chars {
-			break;
+			return index + num_chars;
 		}
-			
-		index += 1;
 	}
 
-	index
+	return 0;
 }
 
 pub fn part1(input: String) {

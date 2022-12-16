@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::HashMap;
+use std::{collections::HashMap, cmp::Ordering};
 
 struct Node {
 	value: usize,
@@ -24,7 +24,6 @@ struct Tree {
 	max_id: usize,
 }
 
-// Rename to SpaghettiTree?
 impl Tree {
 	fn new() -> Tree {
 		Tree {
@@ -122,11 +121,6 @@ impl Tree {
 }
 
 fn compare_trees(left_tree: &mut Tree, right_tree: &mut Tree) -> isize {
-	println!("Comparing left tree:");
-	left_tree._print(0, 0, true);
-	println!("\nWith right tree:");
-	right_tree._print(0, 0, true);
-
 	left_tree.goto_root();
 	right_tree.goto_root();
 
@@ -134,19 +128,14 @@ fn compare_trees(left_tree: &mut Tree, right_tree: &mut Tree) -> isize {
 	fn cmp(left_tree: &mut Tree, right_tree: &mut Tree) -> isize {
 		let left_node: &Node = left_tree.get_current_node();
 		let right_node: &Node = right_tree.get_current_node();
-		println!("CMP node {} and {}", left_tree.current_id, right_tree.current_id);
 
 		if left_node.is_list && right_node.is_list {
-			println!("LIST");
 
 			if !left_tree.current_node_has_children() && !right_tree.current_node_has_children() {
-				println!("No children in both");
 				return 0;
 			} else if !left_tree.current_node_has_children() {
-				println!("No children in left");
 				return 1;
 			} else if !right_tree.current_node_has_children() {
-				println!("No children in right");
 				return -1;
 			} else {
 				let left_children = left_tree.get_children();
@@ -180,7 +169,6 @@ fn compare_trees(left_tree: &mut Tree, right_tree: &mut Tree) -> isize {
 			left_tree.encapsulate_value_node();
 			return cmp(left_tree, right_tree);
 		} else {
-			println!("Comparing values {} and {}", left_node.value, right_node.value);
 			if left_node.value < right_node.value {
 				return 1
 			} else if left_node.value > right_node.value {
@@ -256,5 +244,43 @@ pub fn part1(input: String) {
 	println!("{}", result);
 }
 
-pub fn part2(_input: String) {
+pub fn part2(input: String) {
+	let mut lines: Vec<String> = vec![];
+
+	for line in input.lines() {
+		if line != "" {
+			lines.push(line.to_string());
+		}
+	}
+
+	let decoder_packet_1 = "[[2]]";
+	let decoder_packet_2 = "[[6]]";
+
+	lines.push(decoder_packet_1.to_string());
+	lines.push(decoder_packet_2.to_string());
+
+	lines.sort_by(|a, b| {
+		// FIXME: We parse them in every sort iteration because of problems with the borrow checker...
+		let mut tree_a = parse_tree(a.to_string());
+		let mut tree_b = parse_tree(b.to_string());
+		let result = compare_trees(&mut tree_a, &mut tree_b);
+
+		if result > 0 {
+			Ordering::Less
+		} else if result < 0 {
+			Ordering::Greater
+		} else {
+			Ordering::Equal
+		}
+	});
+
+	let mut result: usize = 0;
+
+	for (index, line) in lines.iter().enumerate() {
+		if line == decoder_packet_1 || line == decoder_packet_2 {
+			result = if result == 0 { index + 1 } else { result * (index + 1) };
+		}
+	}
+
+	println!("{}", result);
 }

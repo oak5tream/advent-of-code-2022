@@ -160,12 +160,11 @@ fn solve_together(valves: &Vec<Valve>) -> isize {
 
 	let mut max_flow: isize = 0;
 
-	for (index, list) in lists.iter().enumerate() {
+	for (index, forbidden_0) in lists.iter().enumerate() {
 		if index % 10 == 0 {
 			println!("Calculating {} / {}...", index, lists.len());
 		}
 
-		let forbidden_0: Vec<usize> = list.clone();
 		let mut forbidden_1: Vec<usize> = vec![];
 
 		for i in 0 .. valves.len() {

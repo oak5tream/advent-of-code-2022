@@ -1,13 +1,8 @@
 fn get_sorted_calories(input: String) -> Vec<usize> {
-	let lines: Vec<String> = input
-		.lines()
-		.map(|line| line.parse::<String>().unwrap())
-		.collect();
-
 	let mut sum: usize = 0;
 	let mut calories: Vec<usize> = vec![];
 
-	for line in lines.iter() {
+	for line in input.lines() {
 		if line == "" {
 			calories.push(sum);
 			sum = 0;
